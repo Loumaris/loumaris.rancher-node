@@ -1,0 +1,5 @@
+---
+# defaults file for loumaris.rancher-node
+rancher_server: https://rancher.loumaris.cloud
+rancher_container_version: rancher/rancher-agent:v2.2.4
+rancher_default_roles: "--etcd --controlplane --worker"

@@ -1,0 +1,34 @@
+---
+# tasks file for loumaris.rancher-master
+- name: Install dependencies
+  apt:
+    name:
+      - python-pip
+      - python-setuptools
+    state: latest
+    update_cache: True
+
+- name: install docker-py
+  pip:
+    name: docker-py
+    state: latest
+
+- name: Create a rancher directory
+  file:
+    path: /etc/rancher
+    state: directory
+    mode: '0755'
+
+- name: Container present
+  become: true
+  docker_container:
+    name: rancher_agent
+    privileged: "true"
+    state: started
+    image: "{{ rancher_container_version }}"
+    restart_policy: unless-stopped
+    network_mode: host
+    volumes:
+      - /etc/rancher/kubernetes:/etc/kubernetes
+      - /var/run:/var/run
+    command: --server {{ rancher_server }} --token {{ rancher_token }} --ca-checksum {{ rancher_checksum }} --address {{ rancher_public_ip }} {{ rancher_default_roles }}
